@@ -1,18 +1,18 @@
 Chat API .NET
 ===========
 
-This is an API written in C# but it can be used in any .NET language. It's a fork from WhatsAPINet, which is based on Chat API (php).
+This is a fork from currently unsupported [mgp25/Chat-API-NET](https://github.com/mgp25/Chat-API-NET) project - WhatsApp API client library written in C#.
 
-## Documentation
-* FunXMPP Protocol - https://github.com/mgp25/Chat-API/wiki/FunXMPP-Protocol
+# Modifications
+- fixed encoder/decoder
+- register/login constants fixes
+- small protocol fixes
+- demo client with some small functionality (login, get phone presence, status, photo) added
 
-## Protocol
-More info in Chat API repo wiki https://github.com/mgp25/Chat-API
+Modifications were "translated" from [tgalal/yowsup](https://github.com/tgalal/yowsup) project - Python WhatsApp API client library.
 
-**Special thanks to [shirioko](https://github.com/shirioko)**
-
-# Terms and conditions
-
-- You will NOT use this API for marketing purposes (spam, massive sending...).
-- We do NOT give support to anyone that wants this API to send massive messages or similar.
-- We reserve the right to block any user of this repository that does not meet these conditions.
+Most important files in *tgalal/yowsup*:
+- [WhatsApp constants](https://github.com/tgalal/yowsup/tree/master/yowsup/env)
+- [encoder](https://github.com/tgalal/yowsup/blob/master/yowsup/layers/coder/encoder.py) and [decoder](https://github.com/tgalal/yowsup/blob/master/yowsup/layers/coder/decoder.py)
+- [authentication layer](https://github.com/tgalal/yowsup/blob/master/yowsup/layers/auth/layer_authentication.py)
+- [protocol dictionary](https://github.com/tgalal/yowsup/blob/master/yowsup/layers/coder/tokendictionary.py)
