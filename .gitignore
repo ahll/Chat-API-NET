@@ -27,5 +27,6 @@ bld/
 *.vspx
 *.sap
 
-#Project Files
-WhatsTest/Program.cs
+# NuGet
+/packages/
+!packages/repositories.config

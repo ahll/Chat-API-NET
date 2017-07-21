@@ -45,6 +45,7 @@ namespace WhatsAppApi
         /// <param name="timeout">Timeout for the connection</param>
         public WhatsNetwork(string whatsHost, int port, int timeout = 2000)
         {
+            this.whatsHost = whatsHost;
             this.recvTimeout = timeout;
             this.whatsPort = port;
             this.incomplete_message = new List<byte>();
@@ -177,6 +178,11 @@ namespace WhatsAppApi
                 try
                 {
                     receiveLength = socket.Receive(buff, 0, length, 0);
+
+                    if (WhatsApp.DEBUG)
+                    {
+                        Console.WriteLine("RX: " + BitConverter.ToString(buff));
+                    }
                 }
                 catch (SocketException excpt)
                 {
@@ -206,6 +212,10 @@ namespace WhatsAppApi
         private void Socket_send(string data, int length, int flags)
         {
             var tmpBytes = WhatsApp.SYSEncoding.GetBytes(data);
+            if (WhatsApp.DEBUG && WhatsApp.DEBUGOutBound)
+            {
+                Console.WriteLine("TX: " + BitConverter.ToString(tmpBytes));
+            }
             this.socket.Send(tmpBytes);
         }
 
@@ -215,6 +225,10 @@ namespace WhatsAppApi
         /// <param name="data">The data that needs to be send as a byte array</param>
         private void Socket_send(byte[] data)
         {
+            if (WhatsApp.DEBUG && WhatsApp.DEBUGOutBound)
+            {
+                Console.WriteLine("TX: " + BitConverter.ToString(data));
+            }
             if (this.socket != null && this.socket.Connected)
             {
                 this.socket.Send(data);

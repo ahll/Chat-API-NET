@@ -26,10 +26,9 @@ namespace WhatsAppApi
                 this._challengeBytes = nextChallenge;
             }
 
-            string resource = string.Format(@"{0}-{1}-{2}",
-                WhatsConstants.Device,
-                WhatsConstants.WhatsAppVer,
-                WhatsConstants.WhatsPort);
+            string resource = string.Format(@"{0}-{1}",
+                WhatsConstants.OS_Name,
+                WhatsConstants.WhatsAppVer);
             var data = this.BinWriter.StartStream(WhatsConstants.WhatsAppServer, resource);
             var feat = this.addFeatures();
             var auth = this.addAuth();
@@ -84,21 +83,20 @@ namespace WhatsAppApi
 
         protected ProtocolTreeNode addFeatures()
         {
-            ProtocolTreeNode readReceipts = new ProtocolTreeNode("readreceipts", null, null, null);
-            ProtocolTreeNode groups_v2 = new ProtocolTreeNode("groups_v2", null, null, null);
-            ProtocolTreeNode privacy = new ProtocolTreeNode("privacy", null, null, null);
-            ProtocolTreeNode presencev2 = new ProtocolTreeNode("presence", null, null, null);
-            return new ProtocolTreeNode("stream:features", null, new ProtocolTreeNode[] { readReceipts, groups_v2, privacy, presencev2 }, null);
+            return new ProtocolTreeNode("stream:features", null, null, null);
         }
 
         protected ProtocolTreeNode addAuth()
         {
             List<KeyValue> attr = new List<KeyValue>(new KeyValue[] {
-                new KeyValue("mechanism", Helper.KeyStream.AuthMethod),
-                new KeyValue("user", this.phoneNumber)});
+                new KeyValue("user", this.phoneNumber),
+                new KeyValue("mechanism", Helper.KeyStream.AuthMethod)});
             if (this.hidden)
             {
                 attr.Add(new KeyValue("passive", "true"));
+            } else
+            {
+                attr.Add(new KeyValue("passive", "false"));
             }
             var node = new ProtocolTreeNode("auth", attr.ToArray(), null, this.getAuthBlob());
             return node;
@@ -121,7 +119,18 @@ namespace WhatsAppApi
                 b.AddRange(new byte[] { 0, 0, 0, 0 });
                 b.AddRange(WhatsApp.SYSEncoding.GetBytes(this.phoneNumber));
                 b.AddRange(this._challengeBytes);
+
                 b.AddRange(WhatsApp.SYSEncoding.GetBytes(Helper.Func.GetNowUnixTimestamp().ToString()));
+
+                b.AddRange(new byte[] { 48, 48, 48, 48, 48, 48, 48, 48 });
+
+                String strCat = "\x00\x00\x00\x00\x00\x00\x00\x00";
+                strCat += WhatsConstants.OS_Version + "\x00";
+                strCat += WhatsConstants.Manufacturer + "\x00";
+                strCat += WhatsConstants.Device + "\x00";
+                strCat += WhatsConstants.BuildVersion;
+                b.AddRange(WhatsApp.SYSEncoding.GetBytes(strCat));
+
                 data = b.ToArray();
 
                 this._challengeBytes = null;
@@ -148,6 +157,16 @@ namespace WhatsAppApi
                 b.AddRange(WhatsApp.SYSEncoding.GetBytes(this.phoneNumber));
                 b.AddRange(this._challengeBytes);
 
+                b.AddRange(WhatsApp.SYSEncoding.GetBytes(Helper.Func.GetNowUnixTimestamp().ToString()));
+
+                b.AddRange(new byte[] { 48, 48, 48, 48, 48, 48, 48, 48 });
+
+                String strCat = "\x00\x00\x00\x00\x00\x00\x00\x00";
+                strCat += WhatsConstants.OS_Version + "\x00";
+                strCat += WhatsConstants.Manufacturer + "\x00";
+                strCat += WhatsConstants.Device + "\x00";
+                strCat += WhatsConstants.BuildVersion;
+                b.AddRange(WhatsApp.SYSEncoding.GetBytes(strCat));
 
                 byte[] data = b.ToArray();
                 this.BinWriter.Key.EncodeMessage(data, 0, 4, data.Length - 4);
@@ -414,7 +433,7 @@ namespace WhatsAppApi
             #region error iq
             if (node.GetAttribute("type") == "error")
             {
-                this.fireOnError(node.GetAttribute("id"), node.GetAttribute("from"), Int32.Parse(node.GetChild("error").GetAttribute("code")), node.GetChild("error").GetAttribute("text"));
+                this.fireOnError(node.GetAttribute("id"), node.GetAttribute("from"), node.GetChild("error").GetAttribute("code"), node.GetChild("error").GetAttribute("text"));
             }
             #endregion
 

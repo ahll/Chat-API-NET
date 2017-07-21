@@ -33,10 +33,12 @@ namespace WhatsTest
             var tmpEncoding = Encoding.UTF8;
             System.Console.OutputEncoding = Encoding.Default;
             System.Console.InputEncoding = Encoding.Default;
-            string nickname = "WhatsApiNet";
-            string sender = "70178717679"; // Mobile number with country code (but without + or 00)
-            string password = "VPU^^^^^^^^^^^^CdM=";//v2 password
-            string target = "70125223790";// Mobile number to send the message to
+            string nickname = "nickname";
+            string sender = "1XXXXXXXXXX"; // Mobile number with country code (but without + or 00)
+            string password = "";//v2 password
+            string target = "1XXXXXXXXXX";// Mobile number to send the message to
+
+            password = WhatsAppApi.Register.WhatsRegisterV2.RequestExist(sender);
 
             wa = new WhatsApp(sender, password, nickname, true);
 

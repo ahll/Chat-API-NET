@@ -110,7 +110,7 @@ namespace WhatsAppApi
         }
 
         public event OnErrorDelegate OnError;
-        protected void fireOnError(string id, string from, int code, string text)
+        protected void fireOnError(string id, string from, string code, string text)
         {
             if (this.OnError != null)
             {
@@ -304,7 +304,7 @@ namespace WhatsAppApi
         public delegate void ExceptionDelegate(Exception ex);
         public delegate void LoginSuccessDelegate(string phoneNumber, byte[] data);
         public delegate void StringDelegate(string data);
-        public delegate void OnErrorDelegate(string id, string from, int code, string text);
+        public delegate void OnErrorDelegate(string id, string from, string code, string text);
         public delegate void OnGetMessageReceivedDelegate(string from, string id);
         public delegate void OnNotificationPictureDelegate(string type, string jid, string id);
         public delegate void OnGetMessageDelegate(ProtocolTreeNode messageNode, string from, string id, string name, string message, bool receipt_sent);

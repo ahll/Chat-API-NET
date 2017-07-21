@@ -79,7 +79,7 @@ namespace WhatsAppApi.Register
                 QueryStringParameters.Add("method", method);
 
                 NameValueCollection RequestHttpHeaders = new NameValueCollection();
-                RequestHttpHeaders.Add("User-Agent", WhatsConstants.UserAgent);
+                RequestHttpHeaders.Add("User-Agent", WhatsConstants.UserAgentRegister);
                 RequestHttpHeaders.Add("Accept", "text/json");
 
                 response = GetResponse("https://v.whatsapp.net/v2/code", QueryStringParameters, RequestHttpHeaders);
@@ -212,7 +212,7 @@ namespace WhatsAppApi.Register
         {
             HttpWebRequest request = HttpWebRequest.Create(new Uri(uri)) as HttpWebRequest;
             request.KeepAlive = false;
-            request.UserAgent = WhatsConstants.UserAgent;
+            request.UserAgent = WhatsConstants.UserAgentRegister;
             request.Accept = "text/json";
             using (var reader = new System.IO.StreamReader(request.GetResponse().GetResponseStream()))
             {

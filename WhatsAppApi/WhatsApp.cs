@@ -329,7 +329,7 @@ namespace WhatsAppApi
                     sb.AppendFormat("POST {0}\r\n", uploadUrl);
                     sb.AppendFormat("Content-Type: multipart/form-data; boundary={0}\r\n", boundary);
                     sb.AppendFormat("Host: {0}\r\n", uri.Host);
-                    sb.AppendFormat("User-Agent: {0}\r\n", WhatsConstants.UserAgent);
+                    sb.AppendFormat("User-Agent: {0}\r\n", WhatsConstants.UserAgentDefault);
                     sb.AppendFormat("Content-Length: {0}\r\n\r\n", clength);
                     string post = sb.ToString();
 

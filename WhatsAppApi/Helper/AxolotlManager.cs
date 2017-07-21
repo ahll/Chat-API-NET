@@ -69,7 +69,7 @@ namespace WhatsAppApi.Helper
                     }
                 }
             }
-            catch (Exception e) { }
+            catch (Exception) { }
             finally { }
             return null;
         }
@@ -176,7 +176,7 @@ namespace WhatsAppApi.Helper
                     if (version == "2" && !skip_unpad)
                         return unpadV2Plaintext(text);
                 }
-                catch (Exception e){
+                catch (Exception){
                   //  ErrorAxolotl(e.Message);
                     return false;
                 }
@@ -197,7 +197,7 @@ namespace WhatsAppApi.Helper
                     if (version == "2" && !skip_unpad)
                         return unpadV2Plaintext(text);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                 }
             }
