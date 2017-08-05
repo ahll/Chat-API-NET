@@ -42,7 +42,7 @@ namespace WhatsAppApi.Settings
         public const string BuildVersion = WhatsAppVerDefault;
 
         public const string WhatsAppVerDefault = "2.16.11";
-        public const string WhatsAppVerRegister = "2.17.16";
+        public const string WhatsAppVerRegister = "2.17.279";
 
         /// <summary>
         /// The whatsapp version the client complies to
@@ -71,7 +71,7 @@ namespace WhatsAppApi.Settings
         public const string Device = DeviceDefault;
 
         public const string ClassesMd5Default = "14w/wF67XBf2vTc+qALwKQ=="; // 2.16.11
-        public const string ClassesMd5Register = "1naz8gL5pIYWbtaOZ3207g=="; // 2.17.16
+        public const string ClassesMd5Register = "3jYxFPSrhqjabEm5b2sXhA=="; // 2.17.279
 
         /// <summary>
         /// Classes MD5 hash
