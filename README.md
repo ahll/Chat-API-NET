@@ -16,3 +16,21 @@ Most important files in *tgalal/yowsup*:
 - [encoder](https://github.com/tgalal/yowsup/blob/master/yowsup/layers/coder/encoder.py) and [decoder](https://github.com/tgalal/yowsup/blob/master/yowsup/layers/coder/decoder.py)
 - [authentication layer](https://github.com/tgalal/yowsup/blob/master/yowsup/layers/auth/layer_authentication.py)
 - [protocol dictionary](https://github.com/tgalal/yowsup/blob/master/yowsup/layers/coder/tokendictionary.py)
+
+# WhatsAppInfoWeb
+Web API (ASP.NET Core Web API using .NET Framework) application that receives information about phone number using WhatsApp API.
+
+Application is for PoC purposes only.
+
+## Input:
+
+* phone
+
+
+## Output (ContactInfo instance):
+
+* phone registered state
+* user id
+* status text
+* last seen timestamp
+* profile photo file
