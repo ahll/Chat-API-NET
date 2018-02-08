@@ -4,6 +4,8 @@ Chat API .NET
 This is a fork from currently unsupported [mgp25/Chat-API-NET](https://github.com/mgp25/Chat-API-NET) project - WhatsApp API client library written in C#.
 
 # Modifications
+- new configuration
+- session of request user encrypt key
 - fixed encoder/decoder
 - register/login constants fixes
 - small protocol fixes
