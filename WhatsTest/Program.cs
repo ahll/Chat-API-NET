@@ -31,16 +31,16 @@ namespace WhatsTest
         private static void Main(string[] args)
         {
             var tmpEncoding = Encoding.UTF8;
-            System.Console.OutputEncoding = Encoding.Default;
-            System.Console.InputEncoding = Encoding.Default;
-            string nickname = "nickname";
-            string sender = "1XXXXXXXXXX"; // Mobile number with country code (but without + or 00)
+            System.Console.OutputEncoding = Encoding.UTF8;
+            System.Console.InputEncoding = Encoding.UTF8;
+            string nickname = "stico";
+            string sender = "34688276498"; // Mobile number with country code (but without + or 00)
             string password = "";//v2 password
-            string target = "1XXXXXXXXXX";// Mobile number to send the message to
+            string target = "34629171696";// Mobile number to send the message to
 
             password = WhatsAppApi.Register.WhatsRegisterV2.RequestExist(sender);
 
-            wa = new WhatsApp(sender, password, nickname, true);
+            wa = new WhatsApp(sender, password, nickname, false);
 
             //event bindings
             wa.OnLoginSuccess += wa_OnLoginSuccess;

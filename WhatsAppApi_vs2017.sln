@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhatsAppApi", "WhatsAppApi\WhatsAppApi.csproj", "{3FC9096A-C4D2-40C7-BE7B-D98ACAB3BD2B}"
 EndProject
@@ -13,7 +13,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mycurve25519", "mycurve2551
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mylibaxolotl", "mylibaxolotl\mylibaxolotl.csproj", "{1DEBDA0C-62C7-40A9-B74A-0F086FC2B65D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhatsAppInfoWeb", "WhatsAppInfoWeb\WhatsAppInfoWeb.csproj", "{6E70FDE0-1E4C-44E0-99AE-581A2B5DD621}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WhatsAppInfoWeb", "WhatsAppInfoWeb\WhatsAppInfoWeb.csproj", "{6E70FDE0-1E4C-44E0-99AE-581A2B5DD621}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,8 +101,8 @@ Global
 		{6E70FDE0-1E4C-44E0-99AE-581A2B5DD621}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E70FDE0-1E4C-44E0-99AE-581A2B5DD621}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{6E70FDE0-1E4C-44E0-99AE-581A2B5DD621}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{6E70FDE0-1E4C-44E0-99AE-581A2B5DD621}.Debug|x64.ActiveCfg = Debug|x64
-		{6E70FDE0-1E4C-44E0-99AE-581A2B5DD621}.Debug|x64.Build.0 = Debug|x64
+		{6E70FDE0-1E4C-44E0-99AE-581A2B5DD621}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6E70FDE0-1E4C-44E0-99AE-581A2B5DD621}.Debug|x64.Build.0 = Debug|Any CPU
 		{6E70FDE0-1E4C-44E0-99AE-581A2B5DD621}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{6E70FDE0-1E4C-44E0-99AE-581A2B5DD621}.Debug|x86.Build.0 = Debug|Any CPU
 		{6E70FDE0-1E4C-44E0-99AE-581A2B5DD621}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -116,5 +116,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5A0080FA-9929-4DA1-8DB1-E45D786E841E}
 	EndGlobalSection
 EndGlobal

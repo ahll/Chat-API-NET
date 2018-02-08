@@ -49,12 +49,12 @@ namespace WhatsAppApi.Helper
                     {
                         string jid                      = child.GetChild("user").GetAttribute("jid");
                         uint registrationId             = deAdjustId(child.GetChild("registration").GetData());
-                        IdentityKey identityKey         = new IdentityKey(new DjbECPublicKey(child.GetChild("identity").GetData()));
+                        IdentityKey identityKey         = new IdentityKey(new DjbECPublicKey(child.GetChild("phash").GetData()));
                         uint signedPreKeyId             = deAdjustId(child.GetChild("skey").GetChild("id").GetData());
                         DjbECPublicKey signedPreKeyPub  = new DjbECPublicKey(child.GetChild("skey").GetChild("value").GetData());
-                        byte[] signedPreKeySig          = child.GetChild("skey").GetChild("signature").GetData();
-                        uint preKeyId                   = deAdjustId(child.GetChild("key").GetChild("id").GetData());
-                        DjbECPublicKey preKeyPublic     = new DjbECPublicKey(child.GetChild("key").GetChild("value").GetData());
+                        byte[] signedPreKeySig          = child.GetChild("skey").GetChild("message").GetData();
+                        uint preKeyId                   = deAdjustId(child.GetChild("crypto").GetChild("id").GetData());
+                        DjbECPublicKey preKeyPublic     = new DjbECPublicKey(child.GetChild("crypto").GetChild("value").GetData());
                         PreKeyBundle preKeyBundle       = new PreKeyBundle(registrationId, 1, preKeyId, preKeyPublic, signedPreKeyId, signedPreKeyPub, signedPreKeySig, identityKey);
                         SessionBuilder sessionBuilder   = new SessionBuilder(this, this, this, this, new AxolotlAddress(ExtractNumber(jid), 1));
 

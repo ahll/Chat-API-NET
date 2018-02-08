@@ -41,7 +41,7 @@ namespace WhatsAppApi.Settings
         /// </summary>
         public const string BuildVersion = WhatsAppVerDefault;
 
-        public const string WhatsAppVerDefault = "2.16.11";
+        public const string WhatsAppVerDefault = "2.16.12";
         public const string WhatsAppVerRegister = "2.17.279";
 
         /// <summary>
