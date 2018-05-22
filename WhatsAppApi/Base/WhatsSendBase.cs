@@ -595,7 +595,12 @@ namespace WhatsAppApi
             {
                 case "encrypt":
                     string encrytrid = node.GetAttribute("value");
-                    if (encrytrid.All(char.IsDigit) && encrytrid.Length > 0) {
+                    if (encrytrid == null && node.GetAllChildren().Any())
+                    {
+                        encrytrid = node.GetAllChildren().First().GetAttribute("value");
+                    }
+                    if (encrytrid != null && encrytrid.All(char.IsDigit) && encrytrid.Length > 0)
+                    {
                         RemoveAllPreKeys();
                         sendSetPreKeys(true);
                     }

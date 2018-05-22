@@ -1,19 +1,16 @@
 // http://www.darkfader.net/toolbox/convert/ test units
 using libaxolotl;
+using libaxolotl.ecc;
 using libaxolotl.protocol;
 using libaxolotl.state;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 // for ExtraFunctions
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using libaxolotl.ecc;
-using libaxolotl.util;
-using System.Security.Cryptography;
 // temporary oly for testing
-using libaxolotl.state.impl;
 
 namespace WhatsAppApi.Helper
 {
@@ -133,7 +130,9 @@ namespace WhatsAppApi.Helper
                             //Convert to list.
                             List<ProtocolTreeNode> children = node.children.ToList();
                             List<KeyValue> attributeHash = node.attributeHash.ToList();
-                            children.Add(new ProtocolTreeNode("body", null, null, (byte[])plaintext));
+                            string textValue = (string)plaintext;
+
+                            children.Add(new ProtocolTreeNode("body", null, null, Encoding.UTF8.GetBytes(textValue)));
                             rtnNode = new ProtocolTreeNode(node.tag, attributeHash.ToArray(), children.ToArray(), node.data);
                             break;
                         case "media":

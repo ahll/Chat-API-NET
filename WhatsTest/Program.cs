@@ -1,44 +1,141 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using WhatsAppApi;
 using WhatsAppApi.Account;
 using WhatsAppApi.Helper;
-using WhatsAppApi.Register;
 using WhatsAppApi.Response;
 
 namespace WhatsTest
 {
+
+
     internal class Program
     {
-        // DEMO STORE SHOULD BE DATABASE OR PERMANENT MEDIA IN REAL CASE
-        static IDictionary<string, axolotl_identities_object> axolotl_identities        = new Dictionary<string, axolotl_identities_object>();
-        static IDictionary<uint, axolotl_prekeys_object> axolotl_prekeys                = new Dictionary<uint, axolotl_prekeys_object>();
-        static IDictionary<uint, axolotl_sender_keys_object> axolotl_sender_keys        = new Dictionary<uint, axolotl_sender_keys_object>();
-        static IDictionary<string, axolotl_sessions_object> axolotl_sessions            = new Dictionary<string, axolotl_sessions_object>();
-        static IDictionary<uint, axolotl_signed_prekeys_object> axolotl_signed_prekeys  = new Dictionary<uint, axolotl_signed_prekeys_object>();
+        /// <summary>
+        /// Writes the given object instance to a Json file.
+        /// <para>Object type must have a parameterless constructor.</para>
+        /// <para>Only Public properties and variables will be written to the file. These can be any type though, even other classes.</para>
+        /// <para>If there are public properties/variables that you do not want written to the file, decorate them with the [JsonIgnore] attribute.</para>
+        /// </summary>
+        /// <typeparam name="T">The type of object being written to the file.</typeparam>
+        /// <param name="filePath">The file path to write the object instance to.</param>
+        /// <param name="objectToWrite">The object instance to write to the file.</param>
+        /// <param name="append">If false the file will be overwritten if it already exists. If true the contents will be appended to the file.</param>
+        public static void WriteToJsonFile(string filePath, object objectToWrite, bool append = false) 
+        {
+            TextWriter writer = null;
+            try
+            {
+                var contentsToWriteToFile = JsonConvert.SerializeObject(objectToWrite);
+                writer = new StreamWriter(filePath, append);
+                writer.Write(contentsToWriteToFile);
+            }
+            finally
+            {
+                if (writer != null)
+                    writer.Close();
+            }
+        }
 
+        /// <summary>
+        /// Reads an object instance from an Json file.
+        /// <para>Object type must have a parameterless constructor.</para>
+        /// </summary>
+        /// <typeparam name="T">The type of object to read from the file.</typeparam>
+        /// <param name="filePath">The file path to read the object instance from.</param>
+        /// <returns>Returns a new instance of the object read from the Json file.</returns>
+        public static T ReadFromJsonFile<T>(string filePath) where T : new()
+        {
+            TextReader reader = null;
+            try
+            {
+                reader = new StreamReader(filePath);
+                var fileContents = reader.ReadToEnd();
+                return JsonConvert.DeserializeObject<T>(fileContents);
+            }
+            finally
+            {
+                if (reader != null)
+                    reader.Close();
+            }
+        }
+
+        static string sessionDir = @"C:\Users\ahll\Desktop\stico_project\whatsappnet\sessiondata\34602496209";
+        // DEMO STORE SHOULD BE DATABASE OR PERMANENT MEDIA IN REAL CASE
+        static IDictionary<string, axolotl_identities_object> axolotl_identities = new Dictionary<string, axolotl_identities_object>();
+        static IDictionary<uint, axolotl_prekeys_object> axolotl_prekeys = new Dictionary<uint, axolotl_prekeys_object>();
+        static IDictionary<int, axolotl_sender_keys_object> axolotl_sender_keys = new Dictionary<int, axolotl_sender_keys_object>();
+        static IDictionary<string, axolotl_sessions_object> axolotl_sessions = new Dictionary<string, axolotl_sessions_object>();
+        static IDictionary<uint, axolotl_signed_prekeys_object> axolotl_signed_prekeys = new Dictionary<uint, axolotl_signed_prekeys_object>();
+        static string sender = "34602496209"; // Mobile number with country code (but without + or 00)
         static WhatsApp wa = null;
+
+        private static void Init(string path, object value)
+        {
+            if (!File.Exists(path))
+            {
+                WriteToJsonFile(path, value);
+            }
+        }
+
+
+        private static void LoadSession()
+        {
+
+            Directory.CreateDirectory(sessionDir);
+
+            Init(sessionDir + @"\axolotl_identities.json", axolotl_identities);
+            axolotl_identities = ReadFromJsonFile<Dictionary<string, axolotl_identities_object>>(sessionDir + @"\axolotl_identities.json");
+
+            Init(sessionDir + @"\axolotl_prekeys.json", axolotl_prekeys);
+            axolotl_prekeys = ReadFromJsonFile<Dictionary<uint, axolotl_prekeys_object>>(sessionDir + @"\axolotl_prekeys.json");
+
+            Init(sessionDir + @"\axolotl_sender_keys.json", axolotl_sender_keys);
+            axolotl_sender_keys = ReadFromJsonFile<Dictionary<int, axolotl_sender_keys_object>>(sessionDir + @"\axolotl_sender_keys.json");
+
+            Init(sessionDir + @"\axolotl_sessions.json", axolotl_sessions);
+            axolotl_sessions = ReadFromJsonFile<Dictionary<string, axolotl_sessions_object>>(sessionDir + @"\axolotl_sessions.json");
+
+            Init(sessionDir + @"\axolotl_signed_prekeys.json", axolotl_signed_prekeys);
+            axolotl_signed_prekeys = ReadFromJsonFile<Dictionary<uint, axolotl_signed_prekeys_object>>(sessionDir + @"\axolotl_signed_prekeys.json");
+
+
+        }
+
+
+        private static void SaveSession()
+        {
+
+            WriteToJsonFile(sessionDir + @"\axolotl_identities.json", axolotl_identities);
+          
+            WriteToJsonFile(sessionDir + @"\axolotl_prekeys.json", axolotl_prekeys);
+          
+            WriteToJsonFile(sessionDir + @"\axolotl_sender_keys.json", axolotl_sender_keys);
+          
+            WriteToJsonFile(sessionDir + @"\axolotl_sessions.json", axolotl_sessions);
+        
+            WriteToJsonFile(sessionDir + @"\axolotl_signed_prekeys.json", axolotl_signed_prekeys);
+     
+
+        }
 
         private static void Main(string[] args)
         {
+            LoadSession();
             var tmpEncoding = Encoding.UTF8;
             System.Console.OutputEncoding = Encoding.UTF8;
             System.Console.InputEncoding = Encoding.UTF8;
             string nickname = "stico";
-            string sender = "34688276498"; // Mobile number with country code (but without + or 00)
-            string password = "";//v2 password
+
+            string password = "dQ4JvDSqeu+7BZsjtpwCIecJCWI=";//v2 password
             string target = "34629171696";// Mobile number to send the message to
 
-            password = WhatsAppApi.Register.WhatsRegisterV2.RequestExist(sender);
+            password =WhatsAppApi.Register.WhatsRegisterV2.RequestExist(sender);
 
             wa = new WhatsApp(sender, password, nickname, false);
 
@@ -80,7 +177,14 @@ namespace WhatsTest
             wa.OnloadPreKeys += wa_OnloadPreKeys;
             wa.OncontainsPreKey += wa_OncontainsPreKey;
             wa.OnremovePreKey += wa_OnremovePreKey;
-            // ISignedPreKeyStore AxolotlStore
+
+            //Sender key
+            wa.OnstoreSenderKey += wa_OnstoreSenderKey;
+            wa.OnloadSenderKey+= wa_OnloadSenderKey;
+            wa.OnremoveSenderKey+= wa_OnremoveSenderKey;
+            wa.OncontainsSenderKey+= wa_OncontainsSenderKey;
+
+           // ISignedPreKeyStore AxolotlStore
             wa.OnstoreSignedPreKey += wa_OnstoreSignedPreKey;
             wa.OnloadSignedPreKey += wa_OnloadSignedPreKey;
             wa.OnloadSignedPreKeys += wa_OnloadSignedPreKeys;
@@ -153,7 +257,7 @@ namespace WhatsTest
             {
                 Console.WriteLine("Existing: {0} (username {1})", item.Key, item.Value);
             }
-            foreach(string item in failedNumbers)
+            foreach (string item in failedNumbers)
             {
                 Console.WriteLine("Non-Existing: {0}", item);
             }
@@ -190,7 +294,7 @@ namespace WhatsTest
         static void wa_OnGetMessageLocation(ProtocolTreeNode locationNode, string from, string id, double lon, double lat, string url, string name, byte[] preview, string User)
         {
             Console.WriteLine("Got location from {0} ({1}, {2})", from, lat, lon);
-            if(!string.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(name))
             {
                 Console.WriteLine("\t{0}", name);
             }
@@ -307,12 +411,13 @@ namespace WhatsTest
                                                     Thread.Sleep(100);
                                                     continue;
                                                 }
-                                                    
+
                                             }
                                             catch (ThreadAbortException)
                                             {
                                             }
-                                        }) {IsBackground = true};
+                                        })
+            { IsBackground = true };
             thRecv.Start();
 
             WhatsUserManager usrMan = new WhatsUserManager();
@@ -353,7 +458,7 @@ namespace WhatsTest
                         wa.SendMessage(tmpUser.GetFullJid(), line);
                         break;
                 }
-           } 
+            }
         }
 
         // ALL NE REQUIRED INTERFACES FOR AXOLOTL ARE BELOW
@@ -363,6 +468,7 @@ namespace WhatsTest
         /// <param name="ErrorMessage"></param>
         static void wa_OnErrorAxolotl(string ErrorMessage)
         {
+            Console.WriteLine(ErrorMessage);
         }
 
         #region DATABASE BINDING FOR IIdentityKeyStore
@@ -376,11 +482,12 @@ namespace WhatsTest
             if (axolotl_identities.ContainsKey(recipientId))
                 axolotl_identities.Remove(recipientId);
 
-            axolotl_identities.Add(recipientId, new axolotl_identities_object(){
-                    recipient_id = recipientId,
-                    public_key  = identityKey
-                });
-
+            axolotl_identities.Add(recipientId, new axolotl_identities_object()
+            {
+                recipient_id = recipientId,
+                public_key = identityKey
+            });
+            SaveSession();
             return true;
         }
 
@@ -394,6 +501,7 @@ namespace WhatsTest
         {
             axolotl_identities_object trusted;
             axolotl_identities.TryGetValue(recipientId, out trusted);
+            SaveSession();
             return true; // (trusted == null || trusted.public_key.Equals(identityKey));
         }
 
@@ -405,6 +513,7 @@ namespace WhatsTest
         {
             axolotl_identities_object identity;
             axolotl_identities.TryGetValue("-1", out identity);
+            SaveSession();
             return (identity == null) ? 000000 : uint.Parse(identity.registration_id);
         }
 
@@ -417,14 +526,15 @@ namespace WhatsTest
             List<byte[]> result = new List<byte[]> { };
             axolotl_identities_object identity;
             axolotl_identities.TryGetValue("-1", out identity);
-            if (identity != null){
+            if (identity != null)
+            {
                 result.Add(identity.public_key);
                 result.Add(identity.private_key);
             }
 
             if (result.Count == 0)
                 return null;
-
+            SaveSession();
             return result;
         }
 
@@ -438,12 +548,14 @@ namespace WhatsTest
             if (axolotl_identities.ContainsKey("-1"))
                 axolotl_identities.Remove("-1");
 
-            axolotl_identities.Add("-1", new axolotl_identities_object(){
+            axolotl_identities.Add("-1", new axolotl_identities_object()
+            {
                 recipient_id = "-1",
                 registration_id = registrationId.ToString(),
                 public_key = publickey,
                 private_key = privatekey
             });
+            SaveSession();
 
         }
         #endregion
@@ -457,6 +569,7 @@ namespace WhatsTest
         {
             if (axolotl_signed_prekeys.ContainsKey(preKeyId))
                 axolotl_signed_prekeys.Remove(preKeyId);
+            SaveSession();
         }
 
         /// <summary>
@@ -468,6 +581,7 @@ namespace WhatsTest
         {
             axolotl_signed_prekeys_object prekey;
             axolotl_signed_prekeys.TryGetValue(preKeyId, out prekey);
+            SaveSession();
             return (prekey == null) ? false : true;
         }
 
@@ -478,12 +592,12 @@ namespace WhatsTest
         static List<byte[]> wa_OnloadSignedPreKeys()
         {
             List<byte[]> result = new List<byte[]> { };
-            foreach (axolotl_signed_prekeys_object key in axolotl_signed_prekeys.Values) 
+            foreach (axolotl_signed_prekeys_object key in axolotl_signed_prekeys.Values)
                 result.Add(key.record);
 
             if (result.Count == 0)
                 return null;
-
+            SaveSession();
             return result;
 
         }
@@ -497,6 +611,7 @@ namespace WhatsTest
         {
             axolotl_signed_prekeys_object prekey;
             axolotl_signed_prekeys.TryGetValue(preKeyId, out prekey);
+            SaveSession();
             return (prekey == null) ? new byte[] { } : prekey.record;
         }
 
@@ -510,13 +625,72 @@ namespace WhatsTest
             if (axolotl_signed_prekeys.ContainsKey(signedPreKeyId))
                 axolotl_signed_prekeys.Remove(signedPreKeyId);
 
-            axolotl_signed_prekeys.Add(signedPreKeyId, new axolotl_signed_prekeys_object(){
+            axolotl_signed_prekeys.Add(signedPreKeyId, new axolotl_signed_prekeys_object()
+            {
                 prekey_id = signedPreKeyId,
                 record = signedPreKeyRecord
             });
-
+            SaveSession();
         }
         #endregion
+
+        #region DATABASE BINDING FOR Sender key
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="senderKeyId"></param>
+        static void wa_OnremoveSenderKey(int senderKeyId)
+        {
+            if (axolotl_sender_keys.ContainsKey(senderKeyId))
+                axolotl_sender_keys.Remove(senderKeyId);
+            SaveSession();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="senderKeyId"></param>
+        /// <returns></returns>
+        static bool wa_OncontainsSenderKey(int senderKeyId)
+        {
+            axolotl_sender_keys_object senderKey;
+            axolotl_sender_keys.TryGetValue(senderKeyId, out senderKey);
+            SaveSession();
+            return (senderKey == null) ? false : true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="senderKeyId"></param>
+        /// <returns></returns>
+        static byte[] wa_OnloadSenderKey(int senderKeyId)
+        {
+            axolotl_sender_keys_object senderKey;
+            axolotl_sender_keys.TryGetValue(senderKeyId, out senderKey);
+            SaveSession();
+            return (senderKey == null) ? new byte[] { } : senderKey.record;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="senderKeyId"></param>
+        /// <param name="senderKeyRecord"></param>
+        static void wa_OnstoreSenderKey(int senderKeyId, byte[] senderKeyRecord)
+        {
+            if (axolotl_sender_keys.ContainsKey(senderKeyId))
+                axolotl_sender_keys.Remove(senderKeyId);
+
+            axolotl_sender_keys.Add(senderKeyId, new axolotl_sender_keys_object()
+            {
+                sender_key_id = senderKeyId,
+                record = senderKeyRecord
+            });
+            SaveSession();
+        }
+        #endregion
+
 
         #region DATABASE BINDING FOR IPreKeyStore
         /// <summary>
@@ -527,6 +701,7 @@ namespace WhatsTest
         {
             if (axolotl_prekeys.ContainsKey(preKeyId))
                 axolotl_prekeys.Remove(preKeyId);
+            SaveSession();
         }
 
         /// <summary>
@@ -538,6 +713,7 @@ namespace WhatsTest
         {
             axolotl_prekeys_object prekey;
             axolotl_prekeys.TryGetValue(preKeyId, out prekey);
+            SaveSession();
             return (prekey == null) ? false : true;
         }
 
@@ -550,6 +726,7 @@ namespace WhatsTest
         {
             axolotl_prekeys_object prekey;
             axolotl_prekeys.TryGetValue(preKeyId, out prekey);
+            SaveSession();
             return (prekey == null) ? new byte[] { } : prekey.record;
         }
 
@@ -565,7 +742,7 @@ namespace WhatsTest
 
             if (result.Count == 0)
                 return null;
-
+            SaveSession();
             return result;
         }
 
@@ -584,6 +761,7 @@ namespace WhatsTest
                 prekey_id = prekeyId.ToString(),
                 record = preKeyRecord
             });
+            SaveSession();
         }
         #endregion
 
@@ -597,6 +775,7 @@ namespace WhatsTest
         {
             if (axolotl_sessions.ContainsKey(recipientId))
                 axolotl_sessions.Remove(recipientId);
+            SaveSession();
         }
 
         /// <summary>
@@ -609,6 +788,7 @@ namespace WhatsTest
         {
             axolotl_sessions_object session;
             axolotl_sessions.TryGetValue(recipientId, out session);
+            SaveSession();
             return (session == null) ? false : true;
         }
 
@@ -620,9 +800,9 @@ namespace WhatsTest
         static List<uint> wa_OngetSubDeviceSessions(string recipientId)
         {
             List<uint> result = new List<uint> { };
-            foreach (axolotl_sessions_object key in axolotl_sessions.Values) 
-                    result.Add(key.device_id);
-
+            foreach (axolotl_sessions_object key in axolotl_sessions.Values)
+                result.Add(key.device_id);
+            SaveSession();
             return result;
         }
 
@@ -636,6 +816,7 @@ namespace WhatsTest
         {
             axolotl_sessions_object session;
             axolotl_sessions.TryGetValue(recipientId, out session);
+            SaveSession();
             return (session == null) ? new byte[] { } : session.record;
 
         }
@@ -652,36 +833,43 @@ namespace WhatsTest
             if (axolotl_sessions.ContainsKey(recipientId))
                 axolotl_sessions.Remove(recipientId);
 
-            axolotl_sessions.Add(recipientId, new axolotl_sessions_object(){
+            axolotl_sessions.Add(recipientId, new axolotl_sessions_object()
+            {
                 device_id = deviceId,
                 recipient_id = recipientId,
                 record = sessionRecord
             });
+            SaveSession();
         }
         #endregion
     }
 
-    public class axolotl_identities_object {
+    public class axolotl_identities_object
+    {
         public string recipient_id { get; set; }
         public string registration_id { get; set; }
         public byte[] public_key { get; set; }
         public byte[] private_key { get; set; }
     }
-    public class axolotl_prekeys_object {
+    public class axolotl_prekeys_object
+    {
         public string prekey_id { get; set; }
         public byte[] record { get; set; }
 
     }
-    public class axolotl_sender_keys_object {
-        public uint sender_key_id { get; set; }
+    public class axolotl_sender_keys_object
+    {
+        public int sender_key_id { get; set; }
         public byte[] record { get; set; }
     }
-    public class axolotl_sessions_object {
+    public class axolotl_sessions_object
+    {
         public string recipient_id { get; set; }
         public uint device_id { get; set; }
         public byte[] record { get; set; }
     }
-    public class axolotl_signed_prekeys_object {
+    public class axolotl_signed_prekeys_object
+    {
         public uint prekey_id { get; set; }
         public byte[] record { get; set; }
     }

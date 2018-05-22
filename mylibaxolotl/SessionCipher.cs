@@ -171,10 +171,10 @@ namespace libaxolotl
 
 				sessionStore.StoreSession(remoteAddress, sessionRecord);
 
-				if (unsignedPreKeyId.HasValue)
-				{
-					preKeyStore.RemovePreKey(unsignedPreKeyId.ForceGetValue());
-				}
+				//if (unsignedPreKeyId.HasValue)
+				//{
+				//	preKeyStore.RemovePreKey(unsignedPreKeyId.ForceGetValue());
+				//}
 
 				return plaintext;
 			}
